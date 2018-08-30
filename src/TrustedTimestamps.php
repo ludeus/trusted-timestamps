@@ -34,17 +34,22 @@ class TrustedTimestamps
      * Creates a Timestamp Requestfile from a hash
      *
      * @param string $hash : The hashed data (sha1)
+     * @param string $hash_algo
      * @return string: path of the created timestamp-requestfile
      * @throws Exception
      */
-    public static function createRequestfile($hash)
+    public static function createRequestfile($hash, $hash_algo = 'sha1')
     {
-        if (strlen($hash) !== 40) {
+        if (strlen($hash) !== 40 && $hash_algo === 'sha1') {
             throw new Exception("Invalid Hash.");
         }
             
         $outfilepath = self::createTempFile();
-        $cmd = "openssl ts -query -digest ".escapeshellarg($hash)." -cert -out ".escapeshellarg($outfilepath);
+        $cmd = "openssl ts -query -digest ".escapeshellarg($hash);
+        if ($hash_algo !== 'sha1') {
+            $cmd .= " -".addslashes($hash_algo);
+        }
+        $cmd .= " -cert -out ".escapeshellarg($outfilepath);
 
         $retarray = array();
         exec($cmd." 2>&1", $retarray, $retcode);
@@ -151,12 +156,13 @@ class TrustedTimestamps
      * @param string $base64_response_string : The response string as returned by signRequestfile
      * @param int $response_time : The response time, which should be checked
      * @param string $tsa_cert_file : The path to the TSAs certificate chain (e.g. https://pki.pca.dfn.de/global-services-ca/pub/cacert/chain.txt)
+     * @param string $hash_algo
      * @return bool
      * @throws Exception
      */
-    public static function validate($hash, $base64_response_string, $response_time, $tsa_cert_file)
+    public static function validate($hash, $base64_response_string, $response_time, $tsa_cert_file, $hash_algo = 'sha1')
     {
-        if (strlen($hash) !== 40) {
+        if (strlen($hash) !== 40 && $hash_algo === 'sha1') {
             throw new Exception("Invalid Hash");
         }
         
@@ -176,7 +182,11 @@ class TrustedTimestamps
         
         $responsefile = self::createTempFile($binary_response_string);
 
-        $cmd = "openssl ts -verify -digest ".escapeshellarg($hash)." -in ".escapeshellarg($responsefile)." -CAfile ".escapeshellarg($tsa_cert_file);
+        $cmd = "openssl ts -verify -digest ".escapeshellarg($hash);
+        if ($hash_algo !== 'sha1') {
+            $cmd .= " -".addslashes($hash_algo);
+        }
+        $cmd .= " -in ".escapeshellarg($responsefile)." -CAfile ".escapeshellarg($tsa_cert_file);
         
         $retarray = array();
         exec($cmd." 2>&1", $retarray, $retcode);

@@ -25,6 +25,16 @@ class XsdToArrayTest extends TestCase
 
         $timestamp = TrustedTimestamps::getTimestampFromAnswer($signature['response_string']);
         $this->assertTrue(!empty($timestamp));
+
+        $sha256 = hash('sha256', 'foo');
+        /** @var \PHPUnit\Framework\string|string $requestFile (suppress IDE warning) */
+        $requestFile = TrustedTimestamps::createRequestfile($sha256, 'sha256');
+        $this->assertFileExists($requestFile);
+        $this->toUnlink[] = $requestFile;
+
+        $signature = TrustedTimestamps::signRequestfile($requestFile, self::TSA_URL);
+        $this->assertTrue(!empty($signature));
+        $this->assertTrue(!empty($signature['response_string']));
     }
 
     public function tearDown()
