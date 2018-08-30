@@ -5,6 +5,7 @@
 
 namespace TrustedTimestamps;
 
+use DateTime;
 use Exception;
 
 /**
@@ -71,10 +72,11 @@ class TrustedTimestamps
      * @param string $requestfile_path : The path to the Timestamp Requestfile as created by createRequestfile
      * @param string $tsa_url : URL of a TSA such as http://zeitstempel.dfn.de
      * @param array $curlOpts you may pass additionnal Curl options: ex [CURLOPT_USERPWD => 'mylogin:mypass']
+     * @param null|string $timestamp_format
      * @return array of response_string with the unix-timetamp of the timestamp response and the base64-encoded response_string
      * @throws Exception
      */
-    public static function signRequestfile($requestfile_path, $tsa_url, array $curlOpts = array())
+    public static function signRequestfile($requestfile_path, $tsa_url, array $curlOpts = array(), $timestamp_format = null)
     {
         if (!file_exists($requestfile_path)) {
             throw new Exception("The Requestfile was not found");
@@ -105,7 +107,7 @@ class TrustedTimestamps
         
         $base64_response_string = base64_encode($binary_response_string);
         
-        $response_time = self::getTimestampFromAnswer($base64_response_string);
+        $response_time = self::getTimestampFromAnswer($base64_response_string, $timestamp_format);
         
         return array("response_string" => $base64_response_string,
                      "response_time" => $response_time);
@@ -115,10 +117,11 @@ class TrustedTimestamps
      * Extracts the unix timestamp from the base64-encoded response string as returned by signRequestfile
      *
      * @param string $base64_response_string : Response string as returned by signRequestfile
+     * @param null|string $timestamp_format
      * @return int: unix timestamp
      * @throws Exception
      */
-    public static function getTimestampFromAnswer($base64_response_string)
+    public static function getTimestampFromAnswer($base64_response_string, $timestamp_format = null)
     {
         $binary_response_string = base64_decode($base64_response_string);
 
@@ -145,7 +148,10 @@ class TrustedTimestamps
          */
         foreach ($retarray as $retline) {
             if (preg_match("~^Time\sstamp\:\s(.*)~", $retline, $matches)) {
-                $response_time = strtotime($matches[1]);
+                $response_time = empty($timestamp_format)
+                    ? strtotime($matches[1])
+                    : DateTime::createFromFormat($timestamp_format, trim($matches[1]))
+                        ->getTimestamp();
                 break;
             }
         }
