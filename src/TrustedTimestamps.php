@@ -26,8 +26,9 @@ class TrustedTimestamps
     /**
      * Creates a Timestamp Requestfile from a hash
      *
-     * @param string $hash: The hashed data (sha1)
+     * @param string $hash : The hashed data (sha1)
      * @return string: path of the created timestamp-requestfile
+     * @throws Exception
      */
     public static function createRequestfile($hash)
     {
@@ -55,9 +56,10 @@ class TrustedTimestamps
     /**
      * Signs a timestamp requestfile at a TSA using CURL
      *
-     * @param string $requestfile_path: The path to the Timestamp Requestfile as created by createRequestfile
-     * @param string $tsa_url: URL of a TSA such as http://zeitstempel.dfn.de
+     * @param string $requestfile_path : The path to the Timestamp Requestfile as created by createRequestfile
+     * @param string $tsa_url : URL of a TSA such as http://zeitstempel.dfn.de
      * @return array of response_string with the unix-timetamp of the timestamp response and the base64-encoded response_string
+     * @throws Exception
      */
     public static function signRequestfile($requestfile_path, $tsa_url)
     {
@@ -93,8 +95,9 @@ class TrustedTimestamps
     /**
      * Extracts the unix timestamp from the base64-encoded response string as returned by signRequestfile
      *
-     * @param string $base64_response_string: Response string as returned by signRequestfile
+     * @param string $base64_response_string : Response string as returned by signRequestfile
      * @return int: unix timestamp
+     * @throws Exception
      */
     public static function getTimestampFromAnswer($base64_response_string)
     {
@@ -137,11 +140,12 @@ class TrustedTimestamps
 
     /**
      *
-     * @param string $hash: sha1 hash of the data which should be checked
-     * @param string $base64_response_string: The response string as returned by signRequestfile
-     * @param int $response_time: The response time, which should be checked
-     * @param string $tsa_cert_file: The path to the TSAs certificate chain (e.g. https://pki.pca.dfn.de/global-services-ca/pub/cacert/chain.txt)
-     * @return <type>
+     * @param string $hash : sha1 hash of the data which should be checked
+     * @param string $base64_response_string : The response string as returned by signRequestfile
+     * @param int $response_time : The response time, which should be checked
+     * @param string $tsa_cert_file : The path to the TSAs certificate chain (e.g. https://pki.pca.dfn.de/global-services-ca/pub/cacert/chain.txt)
+     * @return bool
+     * @throws Exception
      */
     public static function validate($hash, $base64_response_string, $response_time, $tsa_cert_file)
     {
@@ -199,8 +203,9 @@ class TrustedTimestamps
     /**
      * Create a tempfile in the systems temp path
      *
-     * @param string $str: Content which should be written to the newly created tempfile
+     * @param string $str : Content which should be written to the newly created tempfile
      * @return string: filepath of the created tempfile
+     * @throws Exception
      */
     public static function createTempFile($str = "")
     {
