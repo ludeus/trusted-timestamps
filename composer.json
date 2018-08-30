@@ -1,0 +1,16 @@
+{
+    "name": "lganee/trusted-timestamp",
+    "description": "Imported from https://d-mueller.de/blog/dealing-with-trusted-timestamps-in-php-rfc-3161/",
+    "type": "library",
+    "require-dev": {
+        "phpunit/phpunit": "^7.3"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "lganee",
+            "email": "ludovic.ganee@libriciel.coop"
+        }
+    ],
+    "require": {}
+}
