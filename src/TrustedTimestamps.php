@@ -70,24 +70,31 @@ class TrustedTimestamps
      *
      * @param string $requestfile_path : The path to the Timestamp Requestfile as created by createRequestfile
      * @param string $tsa_url : URL of a TSA such as http://zeitstempel.dfn.de
+     * @param array $curlOpts you may pass additionnal Curl options: ex [CURLOPT_USERPWD => 'mylogin:mypass']
      * @return array of response_string with the unix-timetamp of the timestamp response and the base64-encoded response_string
      * @throws Exception
      */
-    public static function signRequestfile($requestfile_path, $tsa_url)
+    public static function signRequestfile($requestfile_path, $tsa_url, array $curlOpts = array())
     {
         if (!file_exists($requestfile_path)) {
             throw new Exception("The Requestfile was not found");
         }
 
+        $curlOpts += array(
+            CURLOPT_URL => $tsa_url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_TIMEOUT => 10,
+            CURLOPT_POST => 1,
+            CURLOPT_BINARYTRANSFER => 1,
+            CURLOPT_POSTFIELDS => file_get_contents($requestfile_path),
+            CURLOPT_HTTPHEADER => array('Content-Type: application/timestamp-query'),
+            CURLOPT_USERAGENT => "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)",
+        );
+
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $tsa_url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 10);
-        curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_BINARYTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, file_get_contents($requestfile_path));
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/timestamp-query'));
-        curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)");
+        foreach ($curlOpts as $option => $value) {
+            curl_setopt($ch, $option, $value);
+        }
         $binary_response_string = curl_exec($ch);
         $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
