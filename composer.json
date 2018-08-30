@@ -2,6 +2,7 @@
     "name": "lganee/trusted-timestamps",
     "description": "Imported from https://d-mueller.de/blog/dealing-with-trusted-timestamps-in-php-rfc-3161/",
     "type": "library",
+    "version": "1.0.1",
     "require-dev": {
         "phpunit/phpunit": "^7.3"
     },
