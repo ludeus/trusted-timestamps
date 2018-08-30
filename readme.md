@@ -7,7 +7,7 @@ Packaging of https://d-mueller.de/blog/dealing-with-trusted-timestamps-in-php-rf
 Install with composer
 
 ```bash
-composer require lganee/trusted-timestamp ~1.0
+composer require lganee/trusted-timestamps ~1.0
 ```
 
 ## Usage
