@@ -1,5 +1,5 @@
 {
-    "name": "lganee/trusted-timestamp",
+    "name": "lganee/trusted-timestamps",
     "description": "Imported from https://d-mueller.de/blog/dealing-with-trusted-timestamps-in-php-rfc-3161/",
     "type": "library",
     "require-dev": {
