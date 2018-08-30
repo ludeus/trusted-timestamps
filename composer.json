@@ -12,5 +12,7 @@
             "email": "ludovic.ganee@libriciel.coop"
         }
     ],
-    "require": {}
+    "require": {
+        "ext-curl": "*"
+    }
 }
