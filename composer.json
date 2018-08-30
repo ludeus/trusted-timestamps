@@ -14,5 +14,11 @@
     ],
     "require": {
         "ext-curl": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "TrustedTimestamps\\": "src",
+            "TrustedTimestamps\\Test\\": "tests"
+        }
     }
 }

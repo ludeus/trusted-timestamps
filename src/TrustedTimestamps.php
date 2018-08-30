@@ -1,5 +1,13 @@
 <?php
 /**
+ * TrustedTimestamps.php
+ */
+
+namespace TrustedTimestamps;
+
+use Exception;
+
+/**
  * TrustedTimestamps.php - Creates Timestamp Requestfiles, processes the request at a Timestamp Authority (TSA) after RFC 3161
  *
  * Released under the MIT license (opensource.org/licenses/MIT) Copyright (c) 2015 David Müller
@@ -19,8 +27,7 @@
  * @version 0.3
  * @author David Müller
  * @package trustedtimestamps
-*/
-
+ */
 class TrustedTimestamps
 {
     /**
