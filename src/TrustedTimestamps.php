@@ -152,6 +152,9 @@ class TrustedTimestamps
                     ? strtotime($matches[1])
                     : DateTime::createFromFormat($timestamp_format, trim($matches[1]))
                         ->getTimestamp();
+                if (empty($response_time)) {
+                    throw new Exception("The Timestamp was not found in: ".$retline);
+                }
                 break;
             }
         }
