@@ -54,12 +54,12 @@ class TrustedTimestamps
 
         $retarray = array();
         exec($cmd." 2>&1", $retarray, $retcode);
-        
+
         if ($retcode !== 0) {
             throw new Exception("OpenSSL does not seem to be installed: ".implode(", ", $retarray));
         }
         
-        if (stripos($retarray[0], "openssl:Error") !== false) {
+        if (isset($retarray[0]) && stripos($retarray[0], "openssl:Error") !== false) {
             throw new Exception("There was an error with OpenSSL. Is version >= 0.99 installed?: ".implode(", ", $retarray));
         }
 
