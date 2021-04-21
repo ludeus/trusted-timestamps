@@ -215,8 +215,8 @@ class TrustedTimestamps
          * every other case (Certificate not found / invalid / openssl is not installed / ts command not known)
          * are being handled the same way -> retcode 1 + any retarray NOT containing "message imprint mismatch"
          */
-        
-        if ($retcode === 0 && strtolower(trim($retarray[0])) == "verification: ok") {
+
+        if ($retcode === 0 && strtolower(trim($retarray[count($retarray) - 1])) == "verification: ok") {
             if (self::getTimestampFromAnswer($base64_response_string) != $response_time) {
                 throw new Exception("The responsetime of the request was changed");
             }
