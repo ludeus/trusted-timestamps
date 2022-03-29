@@ -19,7 +19,7 @@ you can find free TSA ex: https://gist.github.com/Manouchehri/fd754e402d98430243
 ```php
 $requestFile = TrustedTimestamps::createRequestfile($sha1);
 $signature = TrustedTimestamps::signRequestfile($requestFile, $tsa_url);
-file_put_contents($signature_filename, base64_decode($signature));
+file_put_contents($signature_filename, base64_decode($signature['response_string']));
 ```
 
 ### Get timestamp (datetime) from a signature file
